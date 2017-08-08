@@ -16,6 +16,8 @@ SLEEP = 1.5
 def check_email(e):
     service = 'breachedaccount'
     email = e.strip()
+    if verbose:
+        print email
     data = []
     url = URL + '/' + service
     url = url + '/' + email
@@ -23,7 +25,7 @@ def check_email(e):
     try:
         r = urllib2.urlopen(req)
         data = json.loads(r.read())
-        if data:
+        if data and not verbose:
             print email
         for breach in data:
             print "  Title:  " + breach['Title']
@@ -56,6 +58,7 @@ def check_filename(filename):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument('-v', '--verbose', dest='verbose', action='store_true')
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('-e', '--email', dest='email')
     group.add_argument('-f', '--filename', dest='filename')
@@ -63,6 +66,7 @@ if __name__ == '__main__':
 
     email = args.email
     filename = args.filename
+    verbose = args.verbose
 
     if email:
         check_email(email)
